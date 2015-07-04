@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import "CILuaRuntime.h"
+#import "CILuaFooFactory.h"
+#import "CILuaBridge.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +20,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    CILuaRuntime::instance().open();
+    CILuaRuntime::instance().loadLibs();
+    
+    CI_LUA_OC_REGISTER(CILuaFooFactory)
+    
+    CILuaState state = CILuaRuntime::instance().state();
+    state.doString("local foo = CIFoo:new(1111); foo:setValue(11111); foo:value()");
     return YES;
 }
 
